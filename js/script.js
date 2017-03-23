@@ -81,10 +81,65 @@
 
 // Mouse Click
 
-document.addEventListener('DOMContentLoaded', function () {
-  function move () {
+$(document).ready(function () {
+  var grid = [null, null, null, null, null, null, null, null, null]
+  var player = 1
+  var $clickBox = $(document).find('.box')
 
+  $clickBox.on('click', function (e) {
+    var turn = playTurn($clickBox.index($(this)))
+    if (turn === true) {
+      if (player === 1) {
+        e.currentTarget.textContent = 'X'
+        e.currentTarget.style.backgroundColor = 'red'
+      } else {
+        e.currentTarget.textContent = 'O'
+        e.currentTarget.style.backgroundColor = 'black'
+      }
+      console.log(e)
+      console.log(grid)
+    }
+  })
+
+  function playTurn (index) {
+    if (grid[index] || isGameOver()) {
+      console.log($clickBox.text)
+      return false
+    } else {
+      grid[index] = player
+      if (player === 1) player = 2
+      else player = 1
+      return true
+    }
   }
 
-  body.addEventListener('click', move)
+  function isGameOver () {
+    if (whoWon()) {
+      restart()
+      alert('Game Over!')
+      return true
+    }
+    return false
+  }
+
+  function whoWon () {
+    if (grid[0] && grid[0] === grid[1] && grid[0] === grid[2]) return grid[0]
+    if (grid[3] && grid[3] === grid[4] && grid[3] === grid[5]) return grid[3]
+    if (grid[6] && grid[6] === grid[7] && grid[6] === grid[8]) return grid[6]
+    if (grid[0] && grid[0] === grid[3] && grid[0] === grid[6]) return grid[0]
+    if (grid[1] && grid[1] === grid[4] && grid[1] === grid[7]) return grid[1]
+    if (grid[2] && grid[2] === grid[5] && grid[2] === grid[8]) return grid[2]
+    if (grid[0] && grid[0] === grid[4] && grid[0] === grid[8]) return grid[0]
+    if (grid[2] && grid[2] === grid[4] && grid[2] === grid[6]) return grid[2]
+    if (grid[0] && grid[1] && grid[2] && grid[3] && grid[4] &&
+   grid[5] && grid[6] && grid[7] && grid[8]) return 3
+    return 0
+  }
+
+  function restart () {
+    grid = [null, null, null, null, null, null, null, null, null]
+    player = 1
+    var allBox = $clickBox
+    allBox.textContent = ''
+  }
 })
